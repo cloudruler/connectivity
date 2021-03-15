@@ -14,6 +14,16 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+
+resource "azurerm_dns_zone" "dns_cloudruler_io" {
+  name                = "cloudruler.io"
+  resource_group_name = azurerm_resource_group.rg.name
+  soa_record {
+      email         = "azuredns-hostmaster.microsoft.com"
+      host_name     = "ns1-03.azure-dns.com."
+  }
+}
+
 module "hub1" {
   source                  = "./modules/hub"
   name                    = "hub1-${module.common.region_codes[var.location]}"
