@@ -159,3 +159,12 @@ resource "azurerm_dns_cname_record" "dns_cname_wildcard" {
 }
 
 */
+
+resource "azurerm_public_ip" "pip_domain" {
+  name                = "pip-${var.domain_key}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  sku                 = "Basic"
+  allocation_method   = "Dynamic"
+  domain_name_label   = var.domain_key
+}

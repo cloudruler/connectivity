@@ -17,7 +17,7 @@ module "dns_zone_cloudruler_io" {
   resource_group_name = azurerm_resource_group.rg.name
   domain              = "cloudruler.io"
   domain_key          = "cloudruler-io"
-  #nameservers         = ["ns1-03.azure-dns.com.", "ns2-03.azure-dns.net.", "ns3-03.azure-dns.org.", "ns4-03.azure-dns.info."]
+  location            = var.location
 }
 
 module "dns_zone_cloudruler_org" {
@@ -25,7 +25,7 @@ module "dns_zone_cloudruler_org" {
   resource_group_name = azurerm_resource_group.rg.name
   domain              = "cloudruler.org"
   domain_key          = "cloudruler-org"
-  #nameservers         = []
+  location            = var.location
 }
 
 module "dns_zone_cloudruler_dev" {
@@ -33,7 +33,7 @@ module "dns_zone_cloudruler_dev" {
   resource_group_name = azurerm_resource_group.rg.name
   domain              = "cloudruler.dev"
   domain_key          = "cloudruler-dev"
-  #nameservers         = []
+  location            = var.location
 }
 
 module "hub1" {
@@ -44,3 +44,13 @@ module "hub1" {
   vnet_address_space      = ["10.0.0.0/16"]
   subnet_address_prefixes = ["10.0.1.0/24"]
 }
+
+resource "azurerm_public_ip" "pip_cloudruler" {
+  name                = "pip-cloudruler"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Basic"
+  allocation_method   = "Dynamic"
+  domain_name_label   = "cloudruler"
+}
+
