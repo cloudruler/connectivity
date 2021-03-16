@@ -53,4 +53,3 @@ resource "azurerm_public_ip" "pip_cloudruler" {
   allocation_method   = "Dynamic"
   domain_name_label   = "cloudruler"
 }
-
