@@ -15,3 +15,10 @@ resource "azurerm_dns_a_record" "dns_a_k8s" {
   ttl                 = 3600
   target_resource_id  = azurerm_public_ip.pip_k8s.id
 }
+
+resource "azurerm_application_security_group" "asg_k8s_master" {
+  name                = "asg-k8s-master"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+}
