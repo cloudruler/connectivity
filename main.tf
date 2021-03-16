@@ -2,8 +2,6 @@ provider "azurerm" {
   features {}
 }
 
-data "azurerm_client_config" "current" {}
-
 module "common" {
   source  = "app.terraform.io/cloudruler/common/cloudruler"
   version = "1.0.0"
@@ -14,14 +12,28 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-
-resource "azurerm_dns_zone" "dns_cloudruler_io" {
-  name                = "cloudruler.io"
+module "dns_zone_cloudruler_io" {
+  source              = "./modules/dns_zone"
   resource_group_name = azurerm_resource_group.rg.name
-  soa_record {
-      email         = "azuredns-hostmaster.microsoft.com"
-      host_name     = "ns1-03.azure-dns.com."
-  }
+  domain              = "cloudruler.io"
+  domain_key          = "cloudruler-io"
+  #nameservers         = ["ns1-03.azure-dns.com.", "ns2-03.azure-dns.net.", "ns3-03.azure-dns.org.", "ns4-03.azure-dns.info."]
+}
+
+module "dns_zone_cloudruler_org" {
+  source              = "./modules/dns_zone"
+  resource_group_name = azurerm_resource_group.rg.name
+  domain              = "cloudruler.org"
+  domain_key          = "cloudruler-org"
+  #nameservers         = []
+}
+
+module "dns_zone_cloudruler_dev" {
+  source              = "./modules/dns_zone"
+  resource_group_name = azurerm_resource_group.rg.name
+  domain              = "cloudruler.dev"
+  domain_key          = "cloudruler-dev"
+  #nameservers         = []
 }
 
 module "hub1" {
