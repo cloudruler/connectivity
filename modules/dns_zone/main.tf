@@ -2,6 +2,15 @@ provider "azurerm" {
   features {}
 }
 
+resource "azurerm_public_ip" "pip_domain" {
+  name                = "pip-${var.domain_key}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  sku                 = "Basic"
+  allocation_method   = "Dynamic"
+  domain_name_label   = var.domain_key
+}
+
 resource "azurerm_dns_zone" "dns_zone" {
   name                = var.domain
   resource_group_name = var.resource_group_name
@@ -123,48 +132,30 @@ resource "azurerm_dns_srv_record" "dns_srv_m365_sip_fedtls" {
   }
 }
 
-#Handle www
-resource "azurerm_dns_cname_record" "dns_cname_www" {
-  name                = "www"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "${var.domain}."
-}
-
-#Not sure why this was here. Something to with certificates I think
-# resource "azurerm_dns_cname_record" "dns_cname_unknown" {
-#   name                = "_3e5a76d12b94285d7a55b7aa094e3176.cloudruler.io"
-#   zone_name           = azurerm_dns_zone.dns_zone.name
-#   resource_group_name = var.resource_group_name
-#   ttl                 = 3600
-#   record              = "8C88B3970BA2D97AB668A76DC1CAA0DE.39D6742992F8DC91F99DC2E143F36541.BGFDTPsUBS.comodoca.com."
-# }
-
-/*
+#Root record
 resource "azurerm_dns_a_record" "dns_a_root" {
   name                = "@"
   zone_name           = azurerm_dns_zone.dns_zone.name
   resource_group_name = var.resource_group_name
   ttl                 = 3600
-  records             = ["13.85.31.243"]
+  target_resource_id  = azurerm_public_ip.pip_domain.id
 }
 
-resource "azurerm_dns_cname_record" "dns_cname_wildcard" {
+#Handle www
+resource "azurerm_dns_a_record" "dns_a_www" {
+  name                = "www"
+  zone_name           = azurerm_dns_zone.dns_zone.name
+  resource_group_name = var.resource_group_name
+  ttl                 = 3600
+  target_resource_id  = azurerm_public_ip.pip_domain.id
+}
+
+#Handle *
+resource "azurerm_dns_a_record" "dns_a_wildcard" {
   name                = "*"
   zone_name           = azurerm_dns_zone.dns_zone.name
   resource_group_name = var.resource_group_name
   ttl                 = 3600
-  record              = "${var.domain}."
+  target_resource_id  = azurerm_public_ip.pip_domain.id
 }
 
-*/
-
-resource "azurerm_public_ip" "pip_domain" {
-  name                = "pip-${var.domain_key}"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  sku                 = "Basic"
-  allocation_method   = "Dynamic"
-  domain_name_label   = var.domain_key
-}

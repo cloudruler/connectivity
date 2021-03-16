@@ -5,10 +5,10 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_virtual_network" "vnet_hub" {
-    name                = "vnet-${var.name}"
-    address_space       = var.vnet_address_space
-    location            = var.location
-    resource_group_name = var.resource_group_name
+  name                = "vnet-${var.name}"
+  address_space       = var.vnet_address_space
+  location            = var.location
+  resource_group_name = var.resource_group_name
 }
 
 
