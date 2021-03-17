@@ -16,9 +16,14 @@ resource "azurerm_dns_a_record" "dns_a_k8s" {
   target_resource_id  = azurerm_public_ip.pip_k8s.id
 }
 
-resource "azurerm_application_security_group" "asg_k8s_master" {
-  name                = "asg-k8s-master"
+resource "azurerm_application_security_group" "asg_k8s_masters" {
+  name                = "asg-k8s-masters"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
+}
 
+resource "azurerm_application_security_group" "asg_k8s_workers" {
+  name                = "asg-k8s-workers"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
 }
