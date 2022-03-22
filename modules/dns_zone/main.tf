@@ -2,15 +2,6 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_public_ip" "pip_domain" {
-  name                = "pip-${var.domain_key}"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  sku                 = "Basic"
-  allocation_method   = "Dynamic"
-  domain_name_label   = var.domain_key
-}
-
 resource "azurerm_dns_zone" "dns_zone" {
   name                = var.domain
   resource_group_name = var.resource_group_name
@@ -131,31 +122,3 @@ resource "azurerm_dns_srv_record" "dns_srv_m365_sip_fedtls" {
     target   = "sipfed.online.lync.com."
   }
 }
-
-#Root record
-resource "azurerm_dns_a_record" "dns_a_root" {
-  name                = "@"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  target_resource_id  = azurerm_public_ip.pip_domain.id
-}
-
-#Handle www
-resource "azurerm_dns_a_record" "dns_a_www" {
-  name                = "www"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  target_resource_id  = azurerm_public_ip.pip_domain.id
-}
-
-#Handle *
-resource "azurerm_dns_a_record" "dns_a_wildcard" {
-  name                = "*"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  target_resource_id  = azurerm_public_ip.pip_domain.id
-}
-
