@@ -7,21 +7,6 @@ module "common" {
   version = "1.0.0"
 }
 
-moved {
-  from = module.dns_zone_cloudruler_dev.azurerm_public_ip.pip_domain
-  to = azurerm_public_ip.pip_cloudruler_dev
-}
-
-moved {
-  from = module.dns_zone_cloudruler_org.azurerm_public_ip.pip_domain
-  to = azurerm_public_ip.pip_cloudruler_org
-}
-
-moved {
-  from = module.dns_zone_cloudruler_io.azurerm_public_ip.pip_domain
-  to = azurerm_public_ip.pip_cloudruler_io
-}
-
 resource "azurerm_resource_group" "rg" {
   name     = "rg-connectivity"
   location = var.location
@@ -78,13 +63,22 @@ resource "azurerm_public_ip" "pip_cloudruler_dev" {
   domain_name_label   = "cloudruler-dev"
 }
 
-# module "dns_zone_cloudruler_com" {
-#   source              = "./modules/dns_zone"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   domain              = "cloudruler.com"
-#   domain_key          = "cloudruler-com"
-#   location            = var.location
-# }
+module "dns_zone_cloudruler_com" {
+  source              = "./modules/dns_zone"
+  resource_group_name = azurerm_resource_group.rg.name
+  domain              = "cloudruler.com"
+  domain_key          = "cloudruler-com"
+  location            = var.location
+}
+
+resource "azurerm_public_ip" "pip_cloudruler_com" {
+  name                = "pip-cloudruler-com"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "Basic"
+  allocation_method   = "Dynamic"
+  domain_name_label   = "cloudruler-com"
+}
 
 module "hub1" {
   source                  = "./modules/hub"
@@ -103,54 +97,6 @@ resource "azurerm_public_ip" "pip_cloudruler" {
   allocation_method   = "Dynamic"
   domain_name_label   = "cloudruler"
 }
-
-
-# moved {
-#   from = module.dns_zone_cloudruler_dev.azurerm_dns_a_record.dns_a_root
-#   to = azurerm_dns_a_record.dns_a_root
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_dev.azurerm_dns_a_record.dns_a_wildcard
-#   to = azurerm_dns_a_record.dns_a_wildcard
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_dev.azurerm_dns_a_record.dns_a_www
-#   to = azurerm_dns_a_record.dns_a_www
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_org.azurerm_dns_a_record.dns_a_root
-#   to = azurerm_dns_a_record.dns_a_root
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_org.azurerm_dns_a_record.dns_a_wildcard
-#   to = azurerm_dns_a_record.dns_a_wildcard
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_org.azurerm_dns_a_record.dns_a_www
-#   to = azurerm_dns_a_record.dns_a_www
-# }
-
-
-# moved {
-#   from = module.dns_zone_cloudruler_io.azurerm_dns_a_record.dns_a_root
-#   to = azurerm_dns_a_record.dns_a_root
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_io.azurerm_dns_a_record.dns_a_wildcard
-#   to = azurerm_dns_a_record.dns_a_wildcard
-# }
-
-# moved {
-#   from = module.dns_zone_cloudruler_io.azurerm_dns_a_record.dns_a_www
-#   to = azurerm_dns_a_record.dns_a_www
-# }
-
 
 #Root record
 resource "azurerm_dns_a_record" "dns_a_root_dev" {
@@ -236,4 +182,36 @@ resource "azurerm_dns_a_record" "dns_a_wildcard_io" {
   ttl                 = 3600
   target_resource_id  = azurerm_public_ip.pip_cloudruler_io.id
 }
+
+#Root record
+resource "azurerm_dns_a_record" "dns_a_root_com" {
+  name                = "@"
+  zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
+  resource_group_name = azurerm_resource_group.rg.name
+  ttl                 = 3600
+  records             = [
+    "185.199.108.153",
+    "185.199.109.153",
+    "185.199.110.153",
+    "185.199.111.153",
+  ]
+}
+
+# #Handle www
+# resource "azurerm_dns_a_record" "dns_a_www_com" {
+#   name                = "www"
+#   zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
+#   resource_group_name = azurerm_resource_group.rg.name
+#   ttl                 = 3600
+#   target_resource_id  = azurerm_public_ip.pip_cloudruler_com.id
+# }
+
+# #Handle *
+# resource "azurerm_dns_a_record" "dns_a_wildcard_com" {
+#   name                = "*"
+#   zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
+#   resource_group_name = azurerm_resource_group.rg.name
+#   ttl                 = 3600
+#   target_resource_id  = azurerm_public_ip.pip_cloudruler_com.id
+# }
 

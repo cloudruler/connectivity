@@ -10,7 +10,7 @@ resource "azurerm_public_ip" "pip_k8s" {
 
 resource "azurerm_dns_a_record" "dns_a_k8s" {
   name                = "k8s"
-  zone_name           = module.dns_zone_cloudruler_io.dns_zone_name
+  zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
   resource_group_name = azurerm_resource_group.rg.name
   ttl                 = 3600
   target_resource_id  = azurerm_public_ip.pip_k8s.id
