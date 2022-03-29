@@ -85,8 +85,8 @@ module "hub1" {
   name                    = "hub1-${module.common.region_codes[var.location]}"
   resource_group_name     = azurerm_resource_group.rg.name
   location                = var.location
-  vnet_address_space      = ["10.0.0.0/16"]
-  subnet_address_prefixes = ["10.0.1.0/24"]
+  vnet_address_space      = ["10.0.0.0/24"] #10.0.0.0 - 10.0.0.255 (254 ips)
+  subnet_address_prefixes = ["10.0.0.0/25"]
 }
 
 resource "azurerm_public_ip" "pip_cloudruler" {
