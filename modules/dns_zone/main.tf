@@ -9,6 +9,9 @@ resource "azurerm_dns_zone" "dns_zone" {
   #  email     = "azuredns-hostmaster.microsoft.com"
   #  host_name = "ns1-03.azure-dns.com."
   #}
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # resource "azurerm_dns_ns_record" "dns_ns_root" {
