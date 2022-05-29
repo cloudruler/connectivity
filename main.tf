@@ -2,10 +2,10 @@ provider "azurerm" {
   features {}
 }
 
-module "common" {
-  source  = "app.terraform.io/cloudruler/common/cloudruler"
-  version = "1.0.0"
-}
+# module "common" {
+#   source  = "app.terraform.io/cloudruler/common/cloudruler"
+#   version = "1.0.0"
+# }
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-connectivity"
@@ -82,7 +82,7 @@ resource "azurerm_public_ip" "pip_cloudruler_com" {
 
 module "hub1" {
   source                  = "./modules/hub"
-  name                    = "hub1-${module.common.region_codes[var.location]}"
+  name                    = "hub1-scu"
   resource_group_name     = azurerm_resource_group.rg.name
   location                = var.location
   vnet_address_space      = ["10.0.0.0/24"] #10.0.0.0 - 10.0.0.255 (254 ips)
@@ -197,14 +197,14 @@ resource "azurerm_dns_a_record" "dns_a_root_com" {
   ]
 }
 
-# #Handle www
-# resource "azurerm_dns_a_record" "dns_a_www_com" {
-#   name                = "www"
-#   zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
-#   resource_group_name = azurerm_resource_group.rg.name
-#   ttl                 = 3600
-#   target_resource_id  = azurerm_public_ip.pip_cloudruler_com.id
-# }
+#Handle www
+resource "azurerm_dns_a_record" "dns_a_www_com" {
+  name                = "www"
+  zone_name           = module.dns_zone_cloudruler_com.dns_zone_name
+  resource_group_name = azurerm_resource_group.rg.name
+  ttl                 = 3600
+  target_resource_id  = azurerm_dns_a_record.dns_a_root_com.id
+}
 
 # #Handle *
 # resource "azurerm_dns_a_record" "dns_a_wildcard_com" {
