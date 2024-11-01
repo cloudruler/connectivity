@@ -5,11 +5,11 @@ terraform {
       version = ">= 2.49"
     }
   }
-  backend "azurerm" {
-    resource_group_name   = "rg-identity"
-    storage_account_name  = "cloudruler"
-    container_name        = "tfstates"
-    key                   = "connectivity.tfstate"
+  cloud {
+    organization = "cloudruler"
+    workspaces {
+      name = "connectivity"
+    }
   }
   required_version = ">= 0.14.7"
 }

@@ -2,21 +2,21 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/hashicorp/azurerm" {
-  version     = "2.50.0"
+  version     = "4.8.0"
   constraints = ">= 2.49.0"
   hashes = [
-    "h1:Vr6WUm88s9hXGkyVjHtHsP2Jmc2ypQXn6ww7dXtvk1M=",
-    "h1:rdD9BCID0lwmjNn54vuI4mCU0eF54jkVCM7vZAqBKKU=",
-    "zh:0c0688d5a743248f8646d39eb3645a4ac19fd7523ba1b47072fa3fb03b92b1b0",
-    "zh:2beb3a55ee970f87a9292ae96d57134be8a03d0566117e7be0fe0d9c1267e4ea",
-    "zh:38091b463fbafe5756420ce34c87845c2a391fec0cded27bdcbbca28febad382",
-    "zh:4ba455da3b37ba8f8b03ff2781121d9c54d0bd8afd76dfe67593011c475dd73f",
-    "zh:5d32b9ed871b3c3b774dc69f1fe14cdf7c1fd63d12bb5f21aad4bfbf75e5ee3d",
-    "zh:6c80cf90a3fc1e17d9caf67cc558c2ff91f8b25e29fdf00942f67711895be5c0",
-    "zh:c0a53e3165407999d10de7aaa983485d42797433c60b5775791ae299121279ed",
-    "zh:dab51d6d76041505aeebf20111febe8616ec465ca31dfb7901f5f5c23a5af095",
-    "zh:e1ad6399f6a6d799002206ee4cb7b794dbb2533b8c3c14502a4419955ec96bff",
-    "zh:e98f1d178d1e111b3f3449e27d305ce263071226fad3d86272e1bd161c26fd43",
-    "zh:eb76ec000c9c49a0bf730370c8880f671597bc01f7b7401ab301df7124c049ec",
+    "h1:YDtjvTOysJnEI+4u7Z7ZXNad6aZNrqFkWjGSwCeUQ3w=",
+    "zh:164de649defb0c09eaaa179fa43748cd2c538d23c8def00c2351d69153bf5eba",
+    "zh:2f0009b8e63aabad1be85ddc16bd363838d67d7be96de8bb5102adeedd200091",
+    "zh:3b73f24f44b790da8c3f113f6eb847e250842b47d8a568106a5a1dca5733d30e",
+    "zh:43ba5bd5ed96802fd09706a177436403432326b2867f24159a274390533e744f",
+    "zh:44cce7f92c2c065e93cca53ed080d11ffedc3a23ff1d97cd56dc473bd5d11c83",
+    "zh:4ccdf523cd49147087f5b8485888f03765d3186d6e7f4328b6602ef7be6c3ff9",
+    "zh:72baf37236cdc5b5ff52b2c3ffeb025340911fdd7b31b137d2b5e083af209bd0",
+    "zh:896f25d17104cadb00b7c7aeb22703518376947ba57182d1f1d4a5cc6db6ddb8",
+    "zh:9e8d33ef1ade71e1d4fa315575e902fe19ad9192ad242b667b1fecde96bfc8ef",
+    "zh:c87a1580d591ed66b3b3714e47d82c2dbd0c1230ffd21c4c295012106411ca29",
+    "zh:d834c230f6c3b3bf15469df96cc6c1245d93ef1b0a122eccc38e645d2ac91854",
+    "zh:f569b65999264a9416862bca5cd2a6177d94ccb0424f3a4ef424428912b9cb3c",
   ]
 }
