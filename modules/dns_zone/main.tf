@@ -18,6 +18,7 @@ resource "azurerm_dns_zone" "dns_zone" {
 #   records             = var.nameservers
 # }
 
+#MX record from MXroute
 resource "azurerm_dns_mx_record" "dns_mx_root" {
   name                = "@"
   zone_name           = azurerm_dns_zone.dns_zone.name
@@ -25,8 +26,13 @@ resource "azurerm_dns_mx_record" "dns_mx_root" {
   ttl                 = 3600
 
   record {
-    preference = 0
-    exchange   = "${var.domain_key}.mail.protection.outlook.com."
+    preference = 10
+    exchange   = "glacier.mxrouting.net"
+  }
+
+  record {
+    preference = 20
+    exchange   = "glacier-relay.mxrouting.net"
   }
 }
 
@@ -36,88 +42,21 @@ resource "azurerm_dns_txt_record" "dns_txt_root" {
   resource_group_name = var.resource_group_name
   ttl                 = 3600
 
-  #Required by Sender Policy Framework (SPF) to prevent spam e-mail using the domain
+  #SPF record from MXroute
   record {
-    value = "v=spf1 include:spf.protection.outlook.com -all"
-  }
-
-  #Old record, not sure why this would be here. Probably domain verification
-  #record {
-  #  value = "p20sqjgfv8e4ghqf3r1e9v7q7t"
-  #}
-}
-
-#Required by Microsoft 365
-resource "azurerm_dns_cname_record" "dns_cname_m365_autodiscover" {
-  name                = "autodiscover"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "autodiscover.outlook.com."
-}
-
-#Required by Microsoft 365
-resource "azurerm_dns_cname_record" "dns_cname_m365_sip" {
-  name                = "sip"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "sipdir.online.lync.com."
-}
-
-#Required by Microsoft 365
-resource "azurerm_dns_cname_record" "dns_cname_m365_lyncdiscover" {
-  name                = "lyncdiscover"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "webdir.online.lync.com."
-}
-
-#Required by Mobile Device Management
-resource "azurerm_dns_cname_record" "dns_cname_mdm_enterpriseregistration" {
-  name                = "enterpriseregistration"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "enterpriseregistration.windows.net."
-}
-
-#Required by Mobile Device Management
-resource "azurerm_dns_cname_record" "dns_cname_mdm_enterpriseenrollment" {
-  name                = "enterpriseenrollment"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = "enterpriseenrollment.manage.microsoft.com."
-}
-
-#Required by Microsoft
-resource "azurerm_dns_srv_record" "dns_srv_m365_sip_tls" {
-  name                = "_sip._tls"
-  zone_name           = azurerm_dns_zone.dns_zone.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-
-  record {
-    priority = 100
-    weight   = 1
-    port     = 443
-    target   = "sipdir.online.lync.com."
+    value = "v=spf1 include:mxlogin.com -all"
   }
 }
 
-#Required by Microsoft
-resource "azurerm_dns_srv_record" "dns_srv_m365_sip_fedtls" {
-  name                = "_sipfederationtls._tcp"
+resource "azurerm_dns_txt_record" "dns_txt_dkim" {
+  name                = "x._domainkey"
   zone_name           = azurerm_dns_zone.dns_zone.name
   resource_group_name = var.resource_group_name
   ttl                 = 3600
 
+  #DKIM from MXroute control panel
   record {
-    priority = 100
-    weight   = 1
-    port     = 5061
-    target   = "sipfed.online.lync.com."
+    value = "v=DKIM1;k=rsa;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3e14pVzgLEtvZxPUDqSMZcR7y4KaAX3JvPlE26zcNsu2b5yzeSs+86y23sdI2esgRIs9tV3cLZ49xWi4NpLC5uQQDiTUn8DiU/2lKgF2MdvtG/R2dsCU8SeYPZpSs6xUM7icNDAMKti+UTJLTujComgcgBI7vyJqTjCqv/qq4GYgc8OoCg3Bl2exqlko319dtcn+0j2lft6hMXWl9yUlk0fuV/C5uyivx4OgoxzOD9cT8BA3yE/i8xN5H7N5vXMIzl/lxDucYU/I3PyT0wQj1tHDQiUjsOYsoe+cZXGSTnt+ILPbhbO/bt9DzxPxVgllvq0pxCPrlxcRfDgcEALSTwIDAQAB"
   }
 }
+
